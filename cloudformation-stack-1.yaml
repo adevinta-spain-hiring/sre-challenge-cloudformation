@@ -1,0 +1,46 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'AWS CloudFormation for Adevinta Spain SRE Challenge'
+
+Parameters:
+  VpcId:
+    Type: String
+  Port:
+    Type: Number
+    Default: 80
+  Ip1:
+    Type: String
+    Default: 10.0.0.1
+  Ip2:
+    Type: String
+    Default: 10.0.0.2
+  Ip3:
+    Type: String
+    Default: 10.0.0.3
+
+Resources:
+  TargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: adevinta-spain-sre-challenge-tg
+      Port: !Ref Port
+      Protocol: TCP
+      HealthCheckEnabled: true
+      HealthCheckIntervalSeconds: 30
+      HealthCheckPort: !Ref Port
+      HealthCheckProtocol: TCP
+      HealthCheckTimeoutSeconds: 10
+      HealthyThresholdCount: 3
+      UnhealthyThresholdCount: 3
+      TargetType: ip
+      Targets:
+        - Id: !Ref Ip1
+          Port: !Ref Port
+          AvailabilityZone: all
+        - Id: !Ref Ip2
+          Port: !Ref Port
+          AvailabilityZone: all
+        - Id: !Ref Ip3
+          Port: !Ref Port
+          AvailabilityZone: all
+      VpcId: !Ref VpcId       
