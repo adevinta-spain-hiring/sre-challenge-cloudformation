@@ -1,6 +1,6 @@
 ---
-AWSTemplateFormatVersion: '2010-09-09'
-Description: 'AWS CloudFormation for Adevinta Spain SRE Challenge'
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "AWS CloudFormation for Adevinta Spain SRE Challenge"
 
 Parameters:
   Port:
@@ -12,6 +12,12 @@ Parameters:
     Type: String
   SubnetC:
     Type: String
+
+  # Solution
+  TargetGroupStackExportName:
+    Type: String
+    Description: The Target Group  Export Name to be used to send the traffic
+    Default: TargetGroup
 
 Resources:
   LoadBalancer:
@@ -25,10 +31,15 @@ Resources:
         - !Ref SubnetA
         - !Ref SubnetB
         - !Ref SubnetC
+
+  # Solution
   Listener:
-    Type: 'AWS::ElasticLoadBalancingV2::Listener'
+    Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
       LoadBalancerArn: !Ref LoadBalancer
       Port: !Ref Port
       Protocol: TCP
- 
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn:
+            Fn::ImportValue: !Sub "${TargetGroupStackExportName}:TargetGroupArn"

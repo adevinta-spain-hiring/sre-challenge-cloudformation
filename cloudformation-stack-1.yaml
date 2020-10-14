@@ -1,6 +1,6 @@
 ---
-AWSTemplateFormatVersion: '2010-09-09'
-Description: 'AWS CloudFormation for Adevinta Spain SRE Challenge'
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "AWS CloudFormation for Adevinta Spain SRE Challenge"
 
 Parameters:
   VpcId:
@@ -17,6 +17,16 @@ Parameters:
   Ip3:
     Type: String
     Default: 10.0.0.3
+
+  # Solution
+  StackExportName:
+    Description: This value will be used to prefix the export values of the template
+    Type: String
+    Default: TargetGroup
+    AllowedPattern: '[a-zA-Z0-9\-]+'
+    MinLength: 2
+    MaxLength: 40
+    ConstraintDescription: Must be in lower or upper case character, "-" is allowed and digit from 0 to 9.  Maximun 40 characters
 
 Resources:
   TargetGroup:
@@ -43,4 +53,12 @@ Resources:
         - Id: !Ref Ip3
           Port: !Ref Port
           AvailabilityZone: all
-      VpcId: !Ref VpcId       
+      VpcId: !Ref VpcId
+
+# Solution
+Outputs:
+  TargetGroupArn:
+    Description: Target Group ARN
+    Value: !Ref TargetGroup
+    Export:
+      Name: !Join [":", [!Ref StackExportName, TargetGroupArn]]
