@@ -43,4 +43,8 @@ Resources:
         - Id: !Ref Ip3
           Port: !Ref Port
           AvailabilityZone: all
-      VpcId: !Ref VpcId       
+      VpcId: !Ref VpcId     
+Outputs:
+  TargetGroupArn:
+    Description: TargetGroup Arn
+    Value: !Ref TargetGroup  

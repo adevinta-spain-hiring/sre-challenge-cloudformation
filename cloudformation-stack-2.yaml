@@ -3,6 +3,8 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: 'AWS CloudFormation for Adevinta Spain SRE Challenge'
 
 Parameters:
+  VpcId:
+    Type: String
   Port:
     Type: Number
     Default: 80
@@ -24,11 +26,19 @@ Resources:
       Subnets:
         - !Ref SubnetA
         - !Ref SubnetB
-        - !Ref SubnetC
+        - !Ref SubnetC      
   Listener:
     Type: 'AWS::ElasticLoadBalancingV2::Listener'
     Properties:
       LoadBalancerArn: !Ref LoadBalancer
       Port: !Ref Port
       Protocol: TCP
- 
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !GetAtt TargetGroupStack.Outputs.TargetGroupArn
+  TargetGroupStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: cloudformation-stack-1.yaml
+      Parameters:
+        VpcId: !Ref VpcId
